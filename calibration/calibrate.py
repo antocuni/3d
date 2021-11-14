@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 from dataclasses import dataclass
 
+@dataclass
+class Vector:
+    x: float
+    y: float
+    z: float
+
 # Default Ender 3 Pro settings:
 #   X =  80 steps/mm
 #   Y =  80 steps/mm
@@ -8,14 +14,8 @@ from dataclasses import dataclass
 #   E =  93 steps/mm
 
 # current settings (use M92 to get)
-CURRENT_STEPS_PER_MM = Vector(79.6, 79.6, 400)
-CURRENT_STEPS_PER_MM_E = 93.0
-
-@dataclass
-class Vector:
-    x: float
-    y: float
-    z: float
+CURRENT_STEPS_PER_MM = Vector(80.04, 79.76, 400.80)
+CURRENT_STEPS_PER_MM_E = 95.06
 
 def calib(current, expected, measured):
     """
@@ -26,7 +26,7 @@ def calib(current, expected, measured):
 def calibrate_axes():
     steps_per_mm = CURRENT_STEPS_PER_MM
     expected = Vector(20, 20, 20)    # standard calibration cube
-    measured = Vector(20, 20, 20)
+    measured = Vector(19.89, 19.96, 19.96)
     #
     sx = calib(steps_per_mm.x, expected.x, measured.x)
     sy = calib(steps_per_mm.y, expected.y, measured.y)

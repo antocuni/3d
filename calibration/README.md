@@ -9,8 +9,9 @@ but inside octoprint.
 Go to Settings -> GCODE Scripts -> "After connection to printer..."
 
     ; 2021-11-14: after installing bltouch, PLA filament
-    M92 X79.6 Y79.6   ; calibrate axis steps
+    M92 X80.04 Y79.76 Z400.80 E95.06   ; calibrate axes
     M851 Z-2.75       ; set Probe Z Offset (for BLTouch)
+
 
 Use calibrate.py to get the correct M92 string.
 
