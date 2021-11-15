@@ -4,8 +4,17 @@ use <MCAD/shapes.scad>		// For octagon
 
 $fn = 50;					// So the cylinders are smooth
 
-nut_diameter = 5.6;			// My M3 nut measured ~5.4, I added a fudge factor
-nut_thickness = 2.31;
+//nut_diameter = 5.6;			// My M3 nut measured ~5.4, I added a fudge factor
+//nut_thickness = 2.31;
+
+// [antocuni] my 1/4" photographic nut
+// NOTE: the diameter of the hexagon() is the d of the inscribed circle
+// (i.e. measured "face to face", compare to the outscribed circle which is
+// vertex-to-vertex)
+nut_diameter = 10.90 + 0.2; // add some tolerance
+nut_thickness = 5.44;
+
+
 
 // Calculate some nice values
 
@@ -31,11 +40,14 @@ module wrench_head(thickness, nut_d, head_extra, open_ended) {
             }
         }
 
-		translate([0, nut_d / 2, 0]) {
+        // XXX the following is wrong: we should use some formula to compute
+        // the diameter of the outscribed circle from the inscribed one
+        out_d = nut_d * 1.15;
+		translate([-out_d/2, 0, -thickness*1.1 / 2]) {
 			if (open_ended) {
-				box(nut_d, nut_d + head_extra / 2, thickness * 1.1);
+                cube([out_d, nut_d+head_extra, thickness * 1.1]);
 			}
-		}
+        }
 	}
 }
 
