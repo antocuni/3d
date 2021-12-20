@@ -1,5 +1,4 @@
 use <MCAD/2Dshapes.scad>
-include <misc_libs/screw_holes.scad>
 
 $fa = 1;
 $fs = 0.4;
