@@ -3,8 +3,8 @@ use <MCAD/2Dshapes.scad>
 $fa = 1;
 $fs = 0.4;
 
-OD = 87 + 0.3;  // outer diameter of the lens hood
-ID = 84;        // inner diameter of the lens hood
+OD = 87 + 0.8;  // outer diameter of the lens hood
+ID = 84 + 0.3;        // inner diameter of the lens hood
 EXTRA_BORDER = 1.5;
 H = 2;
 
