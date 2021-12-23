@@ -8,7 +8,7 @@ ID = 84 + 0.3;        // inner diameter of the lens hood
 EXTRA_BORDER = 1.5;
 H = 2;
 
-W=1;
+W=2;
 
 //color("grey") translate([0, 0, 3]) linear_extrude(10) donutSlice(84/2, 87/2, 0, 360);
 // base
