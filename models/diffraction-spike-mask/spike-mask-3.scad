@@ -3,8 +3,9 @@ use <MCAD/2Dshapes.scad>
 $fa = 1;
 $fs = 0.4;
 
-OD = 87 + 0.8;  // outer diameter of the lens hood
-ID = 84 + 0.3;        // inner diameter of the lens hood
+// XXX: 0.6 works but it's slightly too loose, we should try 0.45
+OD = 87 + 0.6;  // outer diameter of the lens hood
+ID = 84 + 0.3;  // inner diameter of the lens hood
 EXTRA_BORDER = 1.5;
 H = 2;
 
@@ -24,6 +25,6 @@ translate([0, 0, W/2]) {
     cube([W, OD, W], center=true);
 }
 
-/* // raised ring */
+// raised ring
 linear_extrude(10) donutSlice(OD/2, OD/2 + EXTRA_BORDER, 0, 360);
 
