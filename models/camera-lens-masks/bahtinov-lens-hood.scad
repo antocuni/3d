@@ -31,9 +31,6 @@ lensDiameter = 88.5; // 0.5
 // Clear Aperture (mm), must be at least 2mm less than lensDiameter (This determines the extent of the slots in the mask. For mounting on Lens: use filter thread size. Scope: use clear aperture. Hood/Dew Shield: inner diameter):
 lensAperture = 78;
 
-// Retaining Finger Height (mm), 0 if unused (for mounting mask on outside of lens/scope):
-ringHeight = 15;
-
 
 // Bahtinov Factor, use 150 to 200
 bahtinovFactor = 150; // [150:200]
@@ -41,23 +38,8 @@ bahtinovFactor = 150; // [150:200]
 //////////////////////////////////////////////////////////////////////////////
 /* [Mask Options] */
 
-// Retaining fingers offset (mm) from lens diameter. (0 makes fingers inner face flush against lensDiameter. Postive values to fit inside, negative values to fit outside):
-ringTabInterference = -1.2;     // -1.2 to oversize and use 1mm felt pads on fingers
-
 // The Z thickness (mm) of the mask:
 maskThickness = 2; //
-
-// The thickness (mm) of the retaining fingers:
-ringThickness = 1.6; //
-
-// The number of retaining fingers:
-ringPieces = 3; // 
-
-// The Angle (deg) of the each retaining fingers (use 360/ringPieces for a solid ring):
-ringPiece = 30; // 
-
-// The Rotation (deg) of the retaining tabs with respect to the mask:
-ringRotation = 0;
 
 
 // Minimum printable Gap/Spoke Width (mm) (Adjust to printer capability, must be at least nozzle dia. If 1st order mask gap/spoke would be less, 3rd order will be used)
@@ -68,7 +50,7 @@ minGapWidth = 0.8;  // [0.5:0.1:1.0]
 
 
 
-outerDiameter = ringHeight > 0 ? lensDiameter - ringTabInterference : lensDiameter;
+outerDiameter = lensDiameter;
 aperture      = lensAperture;
 
 // Calculate mask results
@@ -91,15 +73,11 @@ echo("**********************");
 echo(outerDiameter=outerDiameter);
 echo(aperture=aperture);
 echo(gap=gap);
-echo(ringHeight=ringHeight);
-echo(ringThickness=ringThickness);
-echo(ringTabInterference=ringTabInterference);
 echo("*********************");
 echo();
 
 // Sanity checks on mask
 
-assert ((outerDiameter + (ringHeight > 0 ? ringThickness : 0) - lensAperture) >= 3, "*** RIM OF MASK IS TOO THIN ***, Try reducing the lensAperture");
 assert (gap >= minGapWidth, "*** UNABLE TO MAKE SLOT WIDTH THICK ENOUGH ***, Mask may not be printable, you can try to  decrease the minGapWidth setting if you think it wise.");
 
 /* create a series of bars covering roughly one half of the
@@ -139,7 +117,7 @@ module bahtinov2D() {
                 bahtinovBars(gap,width);
             }
             difference() {                  // makes the outer margin
-                circle(r=outerDiameter/2+(ringHeight == 0 ? 0 : ringThickness));  // Re-written to make the ringThickness independent.
+                circle(r=outerDiameter/2);
                 circle(r=aperture/2);
             }
             // Add horizontal and vertical structural bars:
@@ -153,4 +131,4 @@ module bahtinov2D() {
 
 
 bahtinov2D();
-//#cylinder(d=outerDiameter, h=1);
+#cylinder(d=outerDiameter, h=1);
