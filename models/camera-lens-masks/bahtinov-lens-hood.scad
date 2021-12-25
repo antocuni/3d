@@ -21,6 +21,7 @@
 */
 
 
+
 // Focal Length (mm) (used to calculate size of mask vanes and gaps):
 lensFocalLength = 400; // [1:4000]
 
@@ -30,14 +31,9 @@ lensDiameter = 88.5; // 0.5
 // Clear Aperture (mm), must be at least 2mm less than lensDiameter (This determines the extent of the slots in the mask. For mounting on Lens: use filter thread size. Scope: use clear aperture. Hood/Dew Shield: inner diameter):
 lensAperture = 78;
 
-// The clearance diameter (mm) of the secondary mirror holder, use 0 if none.
-centerHoleDiameter = 0; // 0.5
-
 // Retaining Finger Height (mm), 0 if unused (for mounting mask on outside of lens/scope):
 ringHeight = 15;
 
-// Handle Height (mm), 0 if unused (for mounting inside of optical tube. Must specify 0 for ringHeight also):
-handleHeight = 0;
 
 // Bahtinov Factor, use 150 to 200
 bahtinovFactor = 150; // [150:200]
@@ -63,28 +59,14 @@ ringPiece = 30; //
 // The Rotation (deg) of the retaining tabs with respect to the mask:
 ringRotation = 0;
 
-// Handle Diameter (mm) 
-handleDiameter = 5; // [4:6]
 
 // Minimum printable Gap/Spoke Width (mm) (Adjust to printer capability, must be at least nozzle dia. If 1st order mask gap/spoke would be less, 3rd order will be used)
 minGapWidth = 0.8;  // [0.5:0.1:1.0]
 
-//////////////////////////////////////////////////////////////////////////////
 
-// Old lens data
-//
-//// Lens Database Details      [diameter, aperture, slot, ringheight, handleheight]
-//sigmaArt50mmDetails         = [ 85.3,     74.0,     0.50,  15.0,    0.0 ];
-//canon100mmF28LDetails       = [ 76.7,     50.0,     0.50,  15.0,    0.0 ];
-//canon70to20mmF28L2Details   = [ 87.9,     76.0,     1.00,  15.0,    0.0 ];
-//sigmaSport150to600mmDetails = [117.9,     96.0,     1.50,  15.0,    0.0 ];
-//PL100to400mmDetails         = [ 88.5,     75.0,     1.33,  15.0,    0.0 ];
 
-//////////////////////////////////////////////////////////////////////////////
-//
-// End of Customizer parameters, can't put any after if statements or modules
-//
-//////////////////////////////////////////////////////////////////////////////
+
+
 
 outerDiameter = ringHeight > 0 ? lensDiameter - ringTabInterference : lensDiameter;
 aperture      = lensAperture;
@@ -108,20 +90,16 @@ echo("*** Key Parameters ***");
 echo("**********************");
 echo(outerDiameter=outerDiameter);
 echo(aperture=aperture);
-echo(centerHoleDiameter=centerHoleDiameter);
 echo(gap=gap);
 echo(ringHeight=ringHeight);
 echo(ringThickness=ringThickness);
 echo(ringTabInterference=ringTabInterference);
-echo(handleHeight=handleHeight);
 echo("*********************");
 echo();
 
 // Sanity checks on mask
-assert((handleHeight == 0) || (ringHeight == 0), "*** Cannot have ring AND handle *** Set handleHeight to 0 for an outside mounted mask, or set ringHeight to 0 for an inside optical tube mounted mask.");
 
 assert ((outerDiameter + (ringHeight > 0 ? ringThickness : 0) - lensAperture) >= 3, "*** RIM OF MASK IS TOO THIN ***, Try reducing the lensAperture");
-assert ((lensAperture - centerHoleDiameter) >= (8 * 2 * gap), "*** LESS THAN 8 VANES ***, Check the centerHoleDiameter and lensAperture. Increase bahtinovFactor if needed.");
 assert (gap >= minGapWidth, "*** UNABLE TO MAKE SLOT WIDTH THICK ENOUGH ***, Mask may not be printable, you can try to  decrease the minGapWidth setting if you think it wise.");
 
 /* create a series of bars covering roughly one half of the
@@ -153,6 +131,7 @@ module bahtinovBars(gap,width) {
 $fn=200;
 module bahtinov2D() {
     width = aperture/2;
+    
     difference() {                          // overall plate minus center hole
         union() {
             difference() {                  // trims the mask to aperture size
@@ -166,57 +145,12 @@ module bahtinov2D() {
             // Add horizontal and vertical structural bars:
             square([gap,2*(aperture/2+1)], center=true);
             translate([aperture/4,0]) square([aperture/2+1,gap], center=true);
-            // Add center hole margin ring if needed:
-            if (centerHoleDiameter > 0 && centerHoleDiameter < outerDiameter) {
-                circle(r=(centerHoleDiameter/2)+minGapWidth);
-            }
-        }
-        // subtract center hole if needed
-        if (centerHoleDiameter > 0 && centerHoleDiameter < outerDiameter) {
-            circle(r=centerHoleDiameter/2);
         }
     }
 }
 
-module pie_slice(r = 10, deg = 30) {
-    degn = (deg % 360 > 0) ? deg % 360 : deg % 360;
-    //echo(degn=degn);
-    difference() {
-        circle(r);
-        if (degn > 180) intersection_for(a = [0, 180 - degn]) rotate(a) translate([-r, 0, 0]) #square(r * 2);
-        else union() for(a = [0, 180 - degn]) rotate(a) translate([-r, 0, 0]) square(r * 2);
-    }
-}
 
 
-module retainingring(){
-    difference()
-    {
-        cylinder(h=ringHeight+maskThickness,d=outerDiameter+2*ringThickness);
-        translate([0,0,-1])cylinder(h=ringHeight+maskThickness+2,d=outerDiameter);
-        for(angle=[0:360/ringPieces:359])
-        {
-            rotate([0,0,angle])
-            linear_extrude(height=ringHeight+maskThickness+2)
-            pie_slice(r=outerDiameter/2+2*ringThickness,deg=360/ringPieces-ringPiece);    
-        }
 
-        // chamfer the leading edges of the clips 
-        translate([0,0,ringHeight+maskThickness-2+(ringThickness/2)+(outerDiameter-sqrt(10*sqrt(2)))/2])
-        {
-            sphere(sqrt(2*((ringThickness/2)+(outerDiameter-sqrt(10*sqrt(2)))/2)*((ringThickness/2)+(outerDiameter-sqrt(10*sqrt(2)))/2)));
-        }    
-    }
-}
-
-union() {
-    linear_extrude(height=maskThickness) bahtinov2D();
-    // add a little handle
-    if (handleHeight > 0)
-        translate([outerDiameter/2-handleDiameter/2,0,0])
-            cylinder(r=handleDiameter/2, h=handleHeight+maskThickness);
-    
-    //add a retaining ring
-    if (ringHeight > 0) 
-        rotate([0,0,ringRotation]) retainingring();
-}
+bahtinov2D();
+//#cylinder(d=outerDiameter, h=1);
