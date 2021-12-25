@@ -21,6 +21,18 @@ https://www.youtube.com/watch?v=Q5M7DvdMcew
 Bed leveling
 -------------
 
+**IMPORTANT**: we need to re-do bed leveling every time we change filament
+because of bed temperature:
+
+  1. find the bed temperature for the new filament
+  2. go to Octoprint -> settings -> Bed visualizer
+  3. find the following gode:
+         M190 S60 ; waiting until the bed is fully warmed up
+  4. change S60 to "S<temperature>"
+  5. re-run bed leveling
+
+
+
 Contrarily to the M92 settings, the bed leveling mesh is stored only in the
 EEPROM.dat and it's automatically loaded at startup:
 
@@ -47,7 +59,7 @@ EEPROM.dat and it's automatically loaded at startup:
 Useful G-codes
 --------------
 
-https://marlinfw.org/docs/gcode/
+https://marlinfw.org/meta/gcode/
 
 M155 S30 Send temperature updates every 30 seconds
 
