@@ -20,10 +20,11 @@
  * Modified by Tim Tait  2021-11-18
 */
 
+$fn=200;
 
 
 // Focal Length (mm) (used to calculate size of mask vanes and gaps):
-lensFocalLength = 400; // [1:4000]
+lensFocalLength = 300;
 
 outerDiameter = 88.5; // diameter of the whole mask
 aperture      = 78;   // diameter of the circle with the bahtinov bars
@@ -74,7 +75,6 @@ module bahtinovBars(gap,width) {
     rotate([0,0,180]) bars(gap, width, numBars);
 }
 
-$fn=200;
 module bahtinov2D() {
     width = aperture/2;
     
