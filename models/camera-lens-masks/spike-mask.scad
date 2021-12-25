@@ -6,12 +6,24 @@ $fs = 0.4;
 D = 58;
 R = D/2;
 
+//"bigger" mask: more robust but I think it looses a bit of light because it
+// covers a small part of the lens
+/*
 R3 = R+0.5;
 R2 = R-0.8;
 R1 = R-1.7;
 R0 = R-2.5;
+*/
 
-H = 1.8;
+// slightly smaller mask which doesn't cover any part of the lens (apart the
+// cross section, obviously
+R3 = R+0.5;
+R2 = R-0.6;
+R1 = R-1.4;
+R0 = R-2;
+
+H = 2.5;
+W = 1; // cross section of the cross
 
 ANGLE = 6;
 
@@ -36,9 +48,9 @@ for(i=[0:5]) {
 
 linear_extrude(H) donutSlice(R0, R1, 0, 360);
 
-W = H;
-translate([0, 0, W/2]) {
-    cube([R0*2, W, W], center=true);
-    cube([W, R0*2, W], center=true);
+
+translate([0, 0, H/2]) {
+    cube([R0*2, W, H], center=true);
+    cube([W, R0*2, H], center=true);
 }
 
