@@ -1,6 +1,23 @@
-// based on https://www.thingiverse.com/thing:4581618
-// modified and adapted by antocuni
+/********************************************************
+   bahtinov mask for the Canon ET-60 lens hood
+  ********************************************************/
 
+use <MCAD/2Dshapes.scad>
+
+// +0.8 makes it very loose, so that we can remove it easily without turning
+// the hood and loose focus
+OD = 87 + 0.8;  // outer diameter of the lens hood
+EXTRA_BORDER = 1.5;
+H = 2;
+
+// raised ring
+linear_extrude(10) donutSlice(OD/2, OD/2 + EXTRA_BORDER, 0, 360);
+// mask
+color("red") linear_extrude(H) bahtinov2D();
+
+
+
+// based on https://www.thingiverse.com/thing:4581618
 /********************************************************/
 /* OpenSCAD 2019.5 or later Required!                   */
 /********************************************************/
@@ -26,10 +43,8 @@ $fn=200;
 // Focal Length (mm) (used to calculate size of mask vanes and gaps):
 lensFocalLength = 300;
 
-outerDiameter = 88.5; // diameter of the whole mask
+outerDiameter = OD; // diameter of the whole mask
 aperture      = 78;   // diameter of the circle with the bahtinov bars
-maskThickness = 2;    // thickness on the Z axis
-
 
 // compute the size of the bars
 bahtinovFactor = 150; // use 150 to 200
@@ -94,9 +109,3 @@ module bahtinov2D() {
         }
     }
 }
-
-
-
-
-bahtinov2D();
-#cylinder(d=outerDiameter, h=1);
