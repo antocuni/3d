@@ -27,10 +27,14 @@ because of bed temperature:
   1. find the bed temperature for the new filament
   2. go to Octoprint -> settings -> Bed visualizer
   3. find the following gode:
+         M140 S60
+         [...]
          M190 S60 ; waiting until the bed is fully warmed up
   4. change S60 to "S<temperature>"
   5. re-run bed leveling
 
+
+One full turn of the knob changes the height of the bed of ~0.3
 
 
 Contrarily to the M92 settings, the bed leveling mesh is stored only in the
